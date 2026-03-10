@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <!-- 日志路径 -->
+    <Properties>
+        <Property name="LOG_HOME">../logs</Property>
+        <Property name="LOG_PATTERN">
+            %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+        </Property>
+    </Properties>
+
+    <Appenders>
+
+        <!-- 控制台输出 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+
+        <!-- 普通日志文件 -->
+        <RollingFile name="File"
+                     fileName="${LOG_HOME}/newcoder.log"
+                     filePattern="${LOG_HOME}/app-%d{yyyy-MM-dd}.log">
+
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+
+            <Policies>
+                <!-- 每天一个日志 -->
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+
+        </RollingFile>
+
+        <!-- 错误日志 -->
+        <RollingFile name="ErrorFile"
+                     fileName="${LOG_HOME}/error.log"
+                     filePattern="${LOG_HOME}/error-%d{yyyy-MM-dd}.log">
+
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"/>
+            </Policies>
+
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+
+        <!-- 项目日志 -->
+        <Logger name="com.newcoder" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Logger>
+
+        <!-- Spring 日志 -->
+        <Logger name="org.springframework" level="warn"/>
+
+        <!-- 根日志 -->
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="ErrorFile"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
